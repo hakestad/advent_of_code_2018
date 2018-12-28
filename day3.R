@@ -31,6 +31,8 @@ for (claim in claims) {
     x_coords <- seq(claim[[2]] + 1, claim[[2]] + claim[[4]])
     y_coords <- seq((claim[[3]] + 1), claim[[3]] + claim[[5]])
    
+    # I also tried using nested sapply, but it was slower. This whole solution
+    # might not be best practie R anyway, but I can't think of a better way to solve it yet 
     for (x in x_coords) {
         for (y in y_coords) {
             if (is.na(fabric[x, y])) {
@@ -46,7 +48,7 @@ for (claim in claims) {
 
 sum(fabric > 1, na.rm = TRUE) # 107043
 
-# Just for fun:
+# Just for fun - plot the fabric showing all areas of overlap between the claims:
 
 require(reshape2)
 require(ggplot2)
@@ -69,3 +71,15 @@ qplot(x, y, fill = overlap, data = fab, geom='tile')
 
 # Gold star 2
 
+for (claim in claims) {
+    # id left top width height
+    x_coords <- seq(claim[[2]] + 1, claim[[2]] + claim[[4]])
+    y_coords <- seq((claim[[3]] + 1), claim[[3]] + claim[[5]])
+    
+    num_double_claimed <- sum(fabric[x_coords, y_coords] > 1, na.rm = TRUE)
+    
+    if (num_double_claimed == 0) {
+        print("Not double claimed ID:")
+        print(claim[[1]])
+    }
+}
